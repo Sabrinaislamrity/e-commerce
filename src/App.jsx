@@ -3,6 +3,10 @@ import Home from "./pages/Home"
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
 import Product from "./pages/Product"
 import Productdetails from "./pages/Productdetails"
+import Cart from "./pages/Cart"
+import Error from "./pages/Error"
+
+
 
 
 let router = createBrowserRouter(createRoutesFromElements(
@@ -11,6 +15,9 @@ let router = createBrowserRouter(createRoutesFromElements(
     <Route path='/product' element={<Product />}></Route>
     <Route path='/product/:id' element={<Productdetails />}
     ></Route>
+    <Route path="/cart" element={<Cart/>}></Route>
+    <Route path="*" element={<Error/>}></Route>
+     
 
 
 
