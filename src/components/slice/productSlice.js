@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export const productSlice = createSlice({
   name: 'product',
   initialState: {
-    cartItem: [],
+    cartItem: localStorage.getItem("cart")? JSON.parse(localStorage.getItem("cart")) : [],
   },
   reducers: {
     addToCart: (state, action) => {
@@ -12,20 +12,50 @@ export const productSlice = createSlice({
     
     );
 
-    // if(){
+    if(findProduct !== -1){
 
-    // }else{
+      state.cartItem[findProduct].qun += 1
+      localStorage.setItem("cart", JSON.stringify(state.cartItem))
 
-    // }
+    }else{
+      state.cartItem = [...state.cartItem, action.payload]
+      localStorage.setItem("cart", JSON.stringify(state.cartItem))
 
-    // console.log(findProduct);
-    },
+    }
+
     
+    },
+
+    productIncrement:(state, action)=>{
+
+      state.cartItem[action.payload].qun += 1
+      localStorage.setItem("cart", JSON.stringify(state.cartItem))
+
+
+    },
+    productDecrement:(state, action)=>{
+      if(state.cartItem[action.payload].qun > 1){
+
+      
+
+      state.cartItem[action.payload].qun -= 1
+      localStorage.setItem("cart", JSON.stringify(state.cartItem))
+
+      }
+
+
+    },
+
+    removeProduct:(state, action)=>{
+      state.cartItem.splice(action.payload, 1)
+      localStorage.setItem("cart", JSON.stringify(state.cartItem))
+    }
+
  
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addToCart } = productSlice.actions
+export const { addToCart,productIncrement,productDecrement,removeProduct } = productSlice.actions
 
 export default productSlice.reducer;

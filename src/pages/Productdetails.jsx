@@ -44,7 +44,7 @@ const Productdetails = () => {
 
     let handleAddTocart = (item) => {
 
-      dispatch(addToCart({...item, qun:1}));
+      dispatch(addToCart({...item, qun: 1 }));
 
       
 
