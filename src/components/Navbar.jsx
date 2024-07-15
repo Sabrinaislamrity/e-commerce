@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Container from './Container'
 import Flex from './Flex'
 import { HiBars2 } from "react-icons/hi2";
@@ -8,7 +8,12 @@ import { FaCaretDown } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import image from "../assets/Image.png"
+import { useSelector } from 'react-redux';
 const Navbar = () => {
+
+    let data = useSelector((state)=> state.product.cartItem)
+
+    
 
     let [menuShow, setmenuShow] = useState(false)
     let [userShow, setuserShow] = useState(false)
@@ -106,7 +111,26 @@ const Navbar = () => {
 
                                 <div ref={userref} onClick={() => setuserShow(!userShow)} className="lg:pt-0 pt-3">
 
-                                <FaShoppingCart />
+                                    <div className="relative">
+
+                                    <FaShoppingCart />
+
+                                    {data.length > 0 ? 
+                                     <div className="absolute h-[20px] w-[20px] bg-[#767676] left-[10px] top-[-15px] rounded-full text-center text-white">
+
+                                     {data.length}
+
+
+                                 </div> : ""
+                                    }
+                                   
+
+                                        
+                                    </div>
+
+                                    
+
+                               
                                 </div>
 
                                 {userShow &&
