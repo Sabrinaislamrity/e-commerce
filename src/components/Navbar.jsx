@@ -28,6 +28,8 @@ const Navbar = () => {
   let navigate = useNavigate();
   let dispatch = useDispatch()
 
+  
+
   useEffect(() => {
     document.addEventListener("click", (e) => {
       if (cartref.current.contains(e.target)) {
@@ -220,10 +222,10 @@ const Navbar = () => {
                     My Account
                   </li>
                   <li className="py-[16px] duration-300 ease-in-out hover:text-[#fff] hover:pl-[10px]">
-                    <Link to="/login">Log in</Link>
+                    Log in
                   </li>
                   <li className="py-[16px] duration-300 ease-in-out hover:text-[#fff] hover:pl-[10px]">
-                    <Link to="/signup">Sign Up</Link>
+                    <Link to="/signup">Sign up</Link>
                   </li>
                 </ul>
               </div>
@@ -257,11 +259,11 @@ const Navbar = () => {
                 
                 <div className="flex justify-around">
                   <div className="">
-                    <a onClick={handleToNai}
+                    <Link to="/cart" onClick={handleToNai}
                       className="w-[148px] h-[50px] border-2 border-[#262626] inline-block text-center leading-[50px]"
                     >
                       View Cart
-                    </a>
+                    </Link>
                   </div>
                   <div className="">
                     <a
