@@ -1,208 +1,287 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import Container from './Container'
-import Flex from './Flex'
-import { HiBars2 } from "react-icons/hi2";
-import { FaSearch } from "react-icons/fa";
-import { FaUser } from "react-icons/fa";
-import { FaCaretDown } from "react-icons/fa";
-import { FaShoppingCart } from "react-icons/fa";
-import { RxCross1 } from "react-icons/rx";
-import image from "../assets/Image.png"
-import { useSelector } from 'react-redux';
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { FaCartPlus, FaSearch, FaUser } from "react-icons/fa";
+import { FaBars } from "react-icons/fa6";
+import { MdArrowDropDown } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Container from "./Container";
+import { apiData } from "./ContextApi";
+import Flex from "./Flex";
+import { removeProduct } from "./slice/productSlice";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const Navbar = () => {
+  let info = useContext(apiData);
+  let data = useSelector((state) => state.product.cartItem);
+  let [cartShow, setCartShow] = useState(false);
+  let [usercartShow, setUsercartShow] = useState(false);
+  let [userShow, setuserShow] = useState(false);
+  let [searchInput, setSearchInput] = useState("");
+  let [searchFilter, setSearchFilter] = useState([]);
+  let [selectedItemIndex, setSelectedItemIndex] = useState(-1); // Track selected item index
+  let cartref = useRef();
+  let userref = useRef();
+  let userAccref = useRef();
+  let userthakbe = useRef();
+  let navigate = useNavigate();
+  let dispatch = useDispatch()
 
-    let data = useSelector((state)=> state.product.cartItem)
+  useEffect(() => {
+    document.addEventListener("click", (e) => {
+      if (cartref.current.contains(e.target)) {
+        setCartShow(!cartShow);
+      } else {
+        setCartShow(false);
+      }
+      if (userref.current.contains(e.target)) {
+        setUsercartShow(!usercartShow);
+      } else {
+        setUsercartShow(false);
+      }
+      if (userAccref.current.contains(e.target)) {
+        setuserShow(!userShow);
+      } else {
+        setuserShow(false);
+      }
+      if(userthakbe.current.contains(e.target)){
+        setUsercartShow(true);
+      }
+    });
 
-    
+    return () => {
+      document.removeEventListener("click", () => {});
+    };
+  }, [cartShow, usercartShow, userShow]);
 
-    let [menuShow, setmenuShow] = useState(false)
-    let [userShow, setuserShow] = useState(false)
-    let [logShow, setlogShow] = useState(false)
+  let handleInput = (e) => {
+    setSearchInput(e.target.value);
+    if (e.target.value === "") {
+      setSearchFilter([]);
+    } else {
+      let searchone = info.filter((item) =>
+        item.title.toLowerCase().includes(e.target.value)
+      );
+      setSearchFilter(searchone);
+    }
+  };
 
-    let menuref = useRef()
-    let userref = useRef()
-    let logref = useRef()
+  let handleSingleSearch = (id) => {
+    navigate(`/product/${id}`);
+    setSearchFilter([]);
+    setSearchInput("");
+  };
 
-    useEffect(() => {
-        document.addEventListener("click", (e) => {
-            if (menuref.current.contains(e.target)) {
-                setmenuShow(!show)
+  let handleKey = (e) => {
+    // Handle arrow key navigation
+    switch (e.key) {
+      case "ArrowUp":
+        setSelectedItemIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+        break;
+      case "ArrowDown":
+        setSelectedItemIndex((prevIndex) =>
+          Math.min(prevIndex + 1, searchFilter.length - 1)
+        );
+        break;
+      case "Enter":
+        if (selectedItemIndex !== -1) {
+          handleSingleSearch(searchFilter[selectedItemIndex].id);
+        }
+        break;
+      default:
+        console.log(e.key);
+    }
+  };
 
-            } else {
-                setmenuShow(false)
-            }
-            if (userref.current.contains(e.target)) {
-                setuserShow(!show)
+  let handleDelete = (index) =>{
+    dispatch(removeProduct(index))
+  }
 
-            } else {
-                setuserShow(false)
-            }
-            if (logref.current.contains(e.target)) {
-                setlogShow(!show)
-
-            } else {
-                setlogShow(false)
-            }
-        })
-
-    }, [menuShow, userShow, logShow])
-
-
-
-
-
-
-
-
-
+  let handleToNai = () =>{
+    toast("go to cart page")
+    setUsercartShow(false);
+    setTimeout(()=>{
+      navigate("/cart")
+    },1000)
+  }
 
   return (
-    <>
-    <nav className='bg-[#F5F5F3] py-[25px] items-center'>
-        <Container>
-            <Flex className={`items-center cursor-pointer px-3`}>
-                <div className="lg:w-[35%] w-[20%]" relative>
-                    <div ref={menuref} onClick={() => setmenuShow(!menuShow)} className="lg:flex items-center gap-x-2 text-black text-[17px]">
-                    <HiBars2 />
-                    <p className='font-sans lg:text-[14px] lg:pt-0 pt-3 text-[9px]'>Shop by Category</p>
-                    </div>
-                    
-                   {menuShow &&
-
-              <div className="z-50 absolute lg:left-[220px] left-[0px] lg:top-[120px] top-[120px] py-[10px] rounded bg-[#262626] lg:w-[270px] w-[150px] pl-[21px]">
-              <ul className=''>
-                <li className='text-[#ffffff88] hover:text-white py-[16px] hover:pl-[10px] font-sans duration-500 ease-in-out'>Accesories</li>
-                <li className='text-[#ffffff88] hover:text-white py-[16px] hover:pl-[10px] font-sans duration-500 ease-in-out'>Furniture</li>
-                <li className='text-[#ffffff88] hover:text-white py-[16px] hover:pl-[10px] font-sans duration-500 ease-in-out'>Electronics</li>
-                <li className='text-[#ffffff88] hover:text-white py-[16px] hover:pl-[10px] font-sans duration-500 ease-in-out'>Clothes</li>
-                <li className='text-[#ffffff88] hover:text-white py-[16px] hover:pl-[10px] font-sans duration-500 ease-in-out'>Bags</li>
-                <li className='text-[#ffffff88] hover:text-white py-[16px] hover:pl-[10px] font-sans duration-500 ease-in-out'>Home appliances</li>
-            </ul>
-</div>
-
-                   }
-
-                </div>
-                <div className="lg:w-[40%] w-[60%]">
-                    <div className="relative items-center">
-                    <input placeholder='Search Products' className='w-full font-sans h-[50px] pl-[10px]' type="text" />
-                        <div className="absolute right-[20px] top-[35%] w-[16px] h-[16px] cursor-pointer">
-                        <FaSearch />
+    <nav className="bg-[#F5F5F3] py-4">
+      <Container>
+        <Flex className="items-center">
+          <div className="w-[30%] relative">
+            <div ref={cartref} className="flex items-center gap-x-3">
+              <FaBars />
+              <p className="font-sans hidden lg:block text-[16px] lg:text-[#767676] text-[white] hover:text-[#262626]">
+                Shop by Category
+              </p>
+            </div>
+            {cartShow && (
+              <div className="absolute z-50 top-[50px] left-0 bg-[#262626] w-[300px]">
+                <ul className="py-4">
+                  <li className="text-[rgba(255,255,255,0.7)] font-sans text-[16px] py-2 duration-300 ease-in-out pl-3 hover:pl-6">
+                    Accesories
+                  </li>
+                  <li className="text-[rgba(255,255,255,0.7)] font-sans text-[16px] py-2 duration-300 ease-in-out pl-3 hover:pl-6">
+                    Furniture
+                  </li>
+                  <li className="text-[rgba(255,255,255,0.7)] font-sans text-[16px] py-2 duration-300 ease-in-out pl-3 hover:pl-6">
+                    Electronics
+                  </li>
+                  <li className="text-[rgba(255,255,255,0.7)] font-sans text-[16px] py-2 duration-300 ease-in-out pl-3 hover:pl-6">
+                    Clothes
+                  </li>
+                  <li className="text-[rgba(255,255,255,0.7)] font-sans text-[16px] py-2 duration-300 ease-in-out pl-3 hover:pl-6">
+                    Bags
+                  </li>
+                  <li className="text-[rgba(255,255,255,0.7)] font-sans text-[16px] py-2 duration-300 ease-in-out pl-3 hover:pl-6">
+                    Home appliances
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+          <div className="w-[40%]">
+            <div className="relative">
+              <input
+                value={searchInput}
+                onKeyUp={handleKey}
+                onChange={handleInput}
+                placeholder="Search..."
+                className="w-full h-[50px] border-2 border-[#262626] outline-none px-2"
+              />
+              <div className="absolute top-[50%] right-4 translate-y-[-50%] ">
+                <FaSearch />
+              </div>
+              {searchFilter.length > 0 && (
+                <div className="w-[500px] h-[400px] overflow-y-scroll z-50 absolute bg-[#F5F5F3] top-[50px] left-0">
+                  {searchFilter.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className={`py-3 cursor-pointer ${
+                        index === selectedItemIndex ? "bg-gray-200" : ""
+                      }`}
+                      onClick={() => handleSingleSearch(item.id)}
+                    >
+                      <div className="flex justify-around items-center">
+                        <div className="">
+                          <img
+                            className="w-[100px] h-[100px]"
+                            src={item.thumbnail}
+                            alt=""
+                          />
                         </div>
-                    </div>
-                </div>
-                <div className="lg:w-[35%] w-[20%]">
-                    <div ref={logref} onClick={() => setlogShow(!logShow)} className="lg:flex relative justify-end lg:gap-x-2 lg:pl-0 pl-[30px] items-center">
-
-                    <div className="flex">
-                                <FaUser />
-                                <FaCaretDown />
-                            </div>
-
-                            {logShow &&
-                            <div className="z-50 absolute top-[25px] right-[25px] bg-white">
-                            <div className="w-[148px] h-[50px]  text-center duration-300 ease-in-out leading-[50px] hover:bg-black hover:text-white hover:rounded hover:text-[16px]">My Account</div>
-                            <div className="w-[148px] h-[50px]  text-center duration-300 ease-in-out leading-[50px] hover:bg-black hover:text-white hover:rounded hover:text-[16px]">Log Out</div>
+                        <div className="">
+                          <h3>{item.title}</h3>
                         </div>
-                            }
-
-                           
-
-
-                                <div ref={userref} onClick={() => setuserShow(!userShow)} className="lg:pt-0 pt-3">
-
-                                    <div className="relative">
-
-                                    <FaShoppingCart />
-
-                                    {data.length > 0 ? 
-                                     <div className="absolute h-[20px] w-[20px] bg-[#767676] left-[10px] top-[-15px] rounded-full text-center text-white">
-
-                                     {data.length}
-
-
-                                 </div> : ""
-                                    }
-                                   
-
-                                        
-                                    </div>
-
-                                    
-
-                               
-                                </div>
-
-                                {userShow &&
-
-                                  <div className="z-50 absolute top-[15px] right-0">
-
-                                <div className=" bg-[#F5F5F3] p-[20px]">
-                                        <div className="w-[300px] flex justify-between items-center">
-                                            <div className="">
-                                                <img src={image} alt="" />
-                                            </div>
-                                            <div className="">
-                                                <h3>Black Smart Watch</h3>
-                                                <h5>$44.00</h5>
-                                            </div>
-                                            <div className="">
-                                                <RxCross1 />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-[20px] bg-white">
-                                        <div className="">
-                                            <h3>Subtotal: $44.00</h3>
-                                        </div>
-                                        <div className="flex mt-[20px] gap-x-3">
-                                            <div className="w-[148px] h-[50px] border border-black text-center duration-300 ease-in-out leading-[50px] hover:bg-black hover:text-white hover:rounded hover:text-[16px]">View Cart</div>
-                                            <div className="w-[148px] h-[50px] border border-black text-center duration-300 ease-in-out leading-[50px]  hover:bg-black hover:text-white hover:rounded hover:text-[16px]">Checkout</div>
-                                        </div>
-                                    </div>
-
-
-
-                                </div>
-
-
-                                }
-
-                              
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                      </div>
                     </div>
+                  ))}
                 </div>
+              )}
+            </div>
+          </div>
+          <div className="w-[30%] relative">
+            <div className="flex justify-end items-center gap-x-2">
+              <div className="flex" ref={userAccref}>
+                <FaUser />
+                <MdArrowDropDown />
+              </div>
+              <div ref={userref} className="">
+                <div className="relative">
+                  <FaCartPlus />
+                  {data.length > 0 ? (
+                    <div className="absolute h-[20px] w-[20px] bg-[#767676] left-[10px] top-[-15px] rounded-full text-center text-white">
+                      {data.length}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+            </div>
+            <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+            {userShow && (
+              <div className="absolute z-50 top-[30px] right-0 w-[300px] bg-[#262626] py-3 px-6">
+                <ul className="font-sans text-[16px] font-normal text-[#FFFFFFB2]">
+                  <li className="py-[16px] duration-300 ease-in-out hover:text-[#fff] hover:pl-[10px]">
+                    My Account
+                  </li>
+                  <li className="py-[16px] duration-300 ease-in-out hover:text-[#fff] hover:pl-[10px]">
+                    <Link to="/login">Log in</Link>
+                  </li>
+                  <li className="py-[16px] duration-300 ease-in-out hover:text-[#fff] hover:pl-[10px]">
+                    <Link to="/signup">Sign Up</Link>
+                  </li>
+                </ul>
+              </div>
+            )}
 
-            </Flex>
-        </Container>
+            <div ref={userthakbe} className="">
+            {usercartShow && (
+              <div className="w-[360px] z-50 absolute bg-[#F5F5F3] top-[50px] right-0">
+                {data.map((item,index) => (
+                  <div className="py-3 ">
+                    <div className="flex justify-around items-center">
+                      <div className="">
+                        <img
+                          className="w-[100px] h-[100px]"
+                          src={item.thumbnail}
+                          alt=""
+                        />
+                      </div>
+                      <div className="">
+                        <h3>{item.title}</h3>
+                        <h5>${item.price}</h5>
+                      </div>
+                      <div onClick={()=>handleDelete(index)} className="">
+                        <RxCross2 />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {data.length > 0 &&
+                <div className="">
+                
+                <div className="flex justify-around">
+                  <div className="">
+                    <a onClick={handleToNai}
+                      className="w-[148px] h-[50px] border-2 border-[#262626] inline-block text-center leading-[50px]"
+                    >
+                      View Cart
+                    </a>
+                  </div>
+                  <div className="">
+                    <a
+                      className="w-[148px] h-[50px] border-2 border-[#262626] inline-block text-center leading-[50px]"
+                      href="#"
+                    >
+                      Checkout
+                    </a>
+                  </div>
+                </div>
+                </div>
+              }
+              </div>
+            )}
+            </div>
+          </div>
+        </Flex>
+      </Container>
     </nav>
-    
-    
-    
-    </>
+  );
+};
 
-  )
-}
-
-export default Navbar
+export default Navbar;
