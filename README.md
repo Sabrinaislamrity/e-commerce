@@ -1,8 +1,24 @@
-# React + Vite
+# Hekto - E-commerce UI Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Hekto** is a fully responsive frontend e-commerce website built using **React** and **Tailwind CSS**. It simulates a clean and modern shopping experience and includes multiple page sections like Home, Shop, Blog, and Contact. The UI is styled with Tailwind and structured with reusable components. The project is part of my portfolio showcasing modern frontend development skills.
 
-Currently, two official plugins are available:
+🔗 **Live Website:** [https://hekto-dusky.vercel.app/](https://hekto-dusky.vercel.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
+
+## 🧪 How to Run Locally
+
+To run this project locally on your machine:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/sabrinaislamrity/hekto-dusky.git
+
+# 2. Navigate into the directory
+cd hekto-dusky
+
+# 3. Install dependencies
+npm install
+
+# 4. Run the development server
+npm run dev
